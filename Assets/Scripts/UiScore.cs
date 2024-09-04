@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -6,7 +5,7 @@ using UnityEngine.UI;
 
 public class UiScore : MonoBehaviour
 {
-    [SerializeField] private List<UiScoreItem> items = new List<UiScoreItem> ();
+    [SerializeField] private List<UiScoreItem> items = new List<UiScoreItem>();
     [SerializeField] private UiScoreItem scoreItemPrefab;
     [SerializeField] private Transform content;
 
@@ -20,40 +19,46 @@ public class UiScore : MonoBehaviour
     {
         confirmButton.onClick.AddListener(OnConfirmClicked);
     }
-    private void Start()
-    {
-        for (int i = 0; i < maxElements; i++)
-        {
-            AddPlayer(i.ToString(), "Player " + i + 1, Random.Range(0, 1000).ToString());
-        }
-        Sort();
-    }
 
-    private void OnDestroy() 
+    private void OnDestroy()
     {
         confirmButton.onClick.RemoveAllListeners();
     }
 
     private void OnConfirmClicked()
     {
+        if (items.Count >= maxElements)
+        {
+            Debug.LogWarning("Cannot add more than 10 players.");
+            return;
+        }
+
         string playerName = nameInput.text;
         string playerScore = scoreInput.text;
 
-        AddPlayer("xx", playerName, playerScore);
+        AddPlayer(items.Count + 1, playerName, playerScore);
 
         nameInput.text = "";
         scoreInput.text = "";
+
+        Sort();
     }
 
     private void Sort()
     {
-        items[3].transform.SetSiblingIndex(0);
+        items.Sort((x, y) => int.Parse(y.Score).CompareTo(int.Parse(x.Score)));
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            items[i].transform.SetSiblingIndex(i);
+            items[i].Set((i + 1).ToString(), items[i].Name, items[i].Score);
+        }
     }
 
-    private void AddPlayer(string number, string name, string score)
+    private void AddPlayer(int number, string name, string score)
     {
-        UiScoreItem item = Instantiate(scoreItemPrefab, transform);
-        item.Set(number, name, score);
+        UiScoreItem item = Instantiate(scoreItemPrefab, content);
+        item.Set(number.ToString(), name, score);
         items.Add(item);
     }
 }

@@ -3,15 +3,20 @@ using TMPro;
 
 public class UiScoreItem : MonoBehaviour
 {
-    [SerializeField] TMP_Text numberText;
-    [SerializeField] TMP_Text nameText;
-    [SerializeField] TMP_Text scoreText;
+    public string Score { get; private set; }
+    public string Name { get; private set; }
 
-   
-    public void Set(string number, string name, string score)
+    [SerializeField] private TMP_Text numberText;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text scoreText;
+
+    public void Set(string number, string playerName, string playerScore)
     {
         numberText.text = number;
-        nameText.text = name;
-        scoreText.text = score;
+        nameText.text = playerName;
+        scoreText.text = playerScore;
+
+        Name = playerName;
+        Score = playerScore;
     }
 }
